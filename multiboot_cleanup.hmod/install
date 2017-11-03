@@ -1,0 +1,4 @@
+if [ -d "$mountpoint/var/lib/foreign-clover" ]; then
+  rm -rf "$mountpoint/var/lib/foreign-clover"
+fi
+return 1

@@ -1,0 +1,14 @@
+cfg_multiboot_boardtype="$(cat "$mountpoint/etc/clover/boardtype")"
+cfg_multiboot_region="$(cat "$mountpoint/etc/clover/REGION")"
+cfg_multiboot_hardware_id="$sftype-$sfregion"
+cfg_firmware="_nand_"
+
+copy "$transferpath/etc/preinit.d/p7075_fix_clovercon" "$preinitpath/"
+copy "$transferpath/etc/preinit.d/p7075_gamesbind" "$preinitpath/"
+copy "$transferpath/etc/preinit.d/p7075_multiboot_fixes" "$preinitpath/"
+copy "$transferpath/etc/preinit.d/p7075_profilebind" "$preinitpath/"
+copy "$transferpath/bin/hsqs_expand_path" "$rootfs/bin/"
+copy "$transferpath/clovercon/" "$rootfs/clovercon/"
+
+chmod +x "$rootfs/bin/hsqs_expand_path"
+return 1

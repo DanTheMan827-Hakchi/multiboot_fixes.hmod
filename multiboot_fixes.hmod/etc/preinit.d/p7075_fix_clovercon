@@ -1,0 +1,6 @@
+if [ -f "$installpath/hmod/uninstall-clovercon" ]; then
+  MODULE="clvcon"
+  [ -f "$mountpoint/lib/modules/$(uname -r)/extra/$MODULE.ko" ] || MODULE="clovercon"
+  
+  mount -o bind "$rootfs/clovercon/$(uname -r)/extra/$MODULE.ko" "$rootfs/lib/modules/$(uname -r)/extra/$MODULE.ko"
+fi

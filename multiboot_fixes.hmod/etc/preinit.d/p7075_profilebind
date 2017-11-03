@@ -1,0 +1,14 @@
+local cloverpath="$mountpoint/var/lib/foreign-clover/$sftype-$sfregion"
+
+if [ "$sftype-$sfregion" != "$cfg_multiboot_hardware_id" ]; then
+  
+  if [ ! -d "$mountpoint/var/lib/clover" ]; then
+    mkdir -p "$mountpoint/var/lib/clover"
+  fi
+  
+  if [ ! -d "$cloverpath" ]; then
+    mkdir -p "$cloverpath"
+  fi
+
+  mount -o bind "$cloverpath" "$mountpoint/var/lib/clover"
+fi

@@ -1,0 +1,3 @@
+unset cfg_multiboot_boardtype
+unset cfg_multiboot_region
+unset cfg_multiboot_hardware_id
