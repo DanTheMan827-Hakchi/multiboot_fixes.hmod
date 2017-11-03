@@ -3,6 +3,8 @@ cfg_multiboot_region="$(cat "$mountpoint/etc/clover/REGION")"
 cfg_multiboot_hardware_id="$sftype-$sfregion"
 cfg_firmware="_nand_"
 
+[ -f "$installpath/menu" ] && rm "$installpath/menu"
+
 copy "$transferpath/etc/preinit.d/p7075_fix_clovercon" "$preinitpath/"
 copy "$transferpath/etc/preinit.d/p7075_gamesbind" "$preinitpath/"
 copy "$transferpath/etc/preinit.d/p7075_multiboot_fixes" "$preinitpath/"

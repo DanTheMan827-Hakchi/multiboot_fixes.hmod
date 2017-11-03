@@ -1,3 +1,14 @@
+local realgamespath="$installpath/games/$sftype-$sfregion"
+
+[ -f "$installpath/menu" ] && rm "$installpath/menu"
+
+rm -rf "$rootfs/usr/share/games/"
+
+mv "$realgamespath" "$rootfs/usr/share/games"
+
+rm -r "$installpath/games/"
+
 unset cfg_multiboot_boardtype
 unset cfg_multiboot_region
 unset cfg_multiboot_hardware_id
+cfg_firmware="_nand_"
