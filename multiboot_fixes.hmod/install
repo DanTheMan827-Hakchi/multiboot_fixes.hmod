@@ -1,16 +1,34 @@
+source "$transferpath/b7200_multiboot"
+
 cfg_multiboot_boardtype="$(cat "$mountpoint/etc/clover/boardtype")"
 cfg_multiboot_region="$(cat "$mountpoint/etc/clover/REGION")"
-cfg_multiboot_hardware_id="$sftype-$sfregion"
+cfg_multiboot_hardware_id="$(multiboot_getcode)"
 cfg_firmware="_nand_"
 
 [ -f "$installpath/menu" ] && rm "$installpath/menu"
 
-copy "$transferpath/etc/preinit.d/p7075_fix_clovercon" "$preinitpath/"
-copy "$transferpath/etc/preinit.d/p7075_gamesbind" "$preinitpath/"
-copy "$transferpath/etc/preinit.d/p7075_multiboot_fixes" "$preinitpath/"
-copy "$transferpath/etc/preinit.d/p7075_profilebind" "$preinitpath/"
-copy "$transferpath/bin/hsqs_expand_path" "$rootfs/bin/"
+copy "$transferpath/b7200_multiboot" "$preinitpath/"
+copy "$transferpath/p7200_multiboot" "$preinitpath/"
+copy "$transferpath/hsqs_expand_path" "$rootfs/bin/"
 copy "$transferpath/clovercon/" "$rootfs/clovercon/"
 
 chmod +x "$rootfs/bin/hsqs_expand_path"
+
+local realgamespath="$installpath/games/$cfg_multiboot_hardware_id"
+
+if [ ! -d "$rootfs/usr/share/games" ]; then
+  mkdir -p "$rootfs/usr/share/games"
+fi
+
+if [ ! -d "$realgamespath" ]; then
+  mkdir -p "$(dirname $realgamespath)"
+  mv "$rootfs/usr/share/games" "$realgamespath"
+  mkdir -p "$rootfs/usr/share/games"
+fi
+
+mkdir -p "$installpath/games/nes-usa"
+mkdir -p "$installpath/games/nes-jpn"
+mkdir -p "$installpath/games/snes-usa"
+mkdir -p "$installpath/games/snes-jpn"
+
 return 1

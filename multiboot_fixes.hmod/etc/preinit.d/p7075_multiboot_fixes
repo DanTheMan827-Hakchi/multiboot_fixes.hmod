@@ -1,2 +1,0 @@
-cat "$rootfs/bin/hsqs_expand_path" > "$rootfs/bin/hsqs"
-chmod +x "$rootfs/bin/hsqs"

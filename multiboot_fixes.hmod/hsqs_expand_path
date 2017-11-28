@@ -1,29 +1,22 @@
 #!/bin/sh
 source /etc/preinit
 script_init
+source /etc/preinit.d/b7200_multiboot
 
 echo "current firmware: $(currentFirmware)"
 printSoftwareInfo
 
 firmware="$1"
-if [ -f "/var/lib/hakchi/menu" ]; then
-  menu="$(cat /var/lib/hakchi/menu)"
-else
-  menu="000"
-fi
 
-if [ "$menu" == "000" ]; then
-  menu=""
-else
-  menu="$menu\\/"
-fi
+menu="000"
+[ -f "/var/lib/hakchi/menu" ] && menu="$(cat /var/lib/hakchi/menu)"
+[ "$menu" == "000" ] && menu=""
+containsGames "$rootfs$gamepath/$menu/" || menu=""
 
-[ "$sftype" == "nes" ] && gamessuffix="nes\\/kachikachi\\/"
- 
-echo "$firmware" | grep '^/usr/share/games/'
+echo "$firmware" | grep "^$gamepath"
 
 if [ $? -eq 0 ]; then
-  firmware="`echo "$firmware" | sed -e "s/^\\/usr\\/share\\/games\\/$gamessuffix/\\/var\\/lib\\/hakchi\\/games\\/$sftype-$sfregion\\/$gamessuffix$menu/"`"
+  firmware="$(echo "$firmware" | sed -e "s#^$gamepath/#$(multiboot_findgamepath)/$menu/#")"
 fi
 
 if [ "$firmware" != "_nand_" ]; then

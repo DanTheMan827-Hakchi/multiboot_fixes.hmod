@@ -1,4 +1,6 @@
-local realgamespath="$installpath/games/$sftype-$sfregion"
+source "$preinitpath/b7200_multiboot"
+
+local realgamespath="$installpath/games/$(multiboot_getcode)"
 
 [ -f "$installpath/menu" ] && rm "$installpath/menu"
 
@@ -12,3 +14,14 @@ unset cfg_multiboot_boardtype
 unset cfg_multiboot_region
 unset cfg_multiboot_hardware_id
 cfg_firmware="_nand_"
+
+rm -r "$rootfs/clovercon/"
+rm "$rootfs/bin/hsqs_expand_path"
+rm "$preinitpath/b7200_multiboot"
+rm "$preinitpath/p7200_multiboot"
+
+if [ -f "$rootfs/bin/hsqs.multiboot-bak" ]; then
+  rm "$rootfs/bin/hsqs"
+  mv "$rootfs/bin/hsqs.multiboot-bak" "$rootfs/bin/hsqs"
+  chmod +x "$rootfs/bin/hsqs"
+fi

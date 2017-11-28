@@ -1,0 +1,80 @@
+multiboot_getcode(){
+  case "$(cat "$mountpoint/etc/clover/boardtype")-$(cat "$mountpoint/etc/clover/REGION")" in
+    dp-nes-EUR_USA)
+      echo "nes-usa"
+      return 0
+      ;;
+    dp-hvc-JPN)
+      echo "nes-jpn"
+      return 0
+      ;;
+    dp-shvc-USA)
+      echo "snes-usa"
+      return 0
+      ;;
+    dp-shvc-EUR)
+      echo "snes-usa"
+      return 0
+      ;;
+    dp-shvc-JPN)
+      echo "snes-jpn"
+      return 0
+      ;;
+  esac
+  return 1
+}
+
+multiboot_checkgamepath(){
+  containsGames "$1" && echo "$1" && return 0
+  containsGames "$1/000" && echo "$1" && return 0
+  return 1
+}
+
+multiboot_checksavepath(){
+  [ -d "$1" ] && echo "$1" && return 0
+  return 1
+}
+
+multiboot_findgamepath(){
+  local mb_systemcode="$(multiboot_getcode)"
+  multiboot_checkgamepath "$mountpoint/media/hakchi/games/$mb_systemcode" && return 0
+  multiboot_checkgamepath "$installpath/games/$mb_systemcode" && return 0
+  multiboot_checkgamepath "$rootfs$gamepath/$mb_systemcode" && return 0
+  multiboot_checkgamepath "$rootfs$gamepath" && return 1
+  return 1
+}
+
+multiboot_findsavepath(){
+  local mb_systemcode="$(multiboot_getcode)"
+  multiboot_checksavepath "$mountpoint/media/hakchi/saves/$mb_systemcode/profiles/0" && return 0
+  multiboot_checksavepath "$mountpoint/media/hakchi/saves/$mb_systemcode" && return 0
+  multiboot_checksavepath "$mountpoint/media/hakchi/saves/" && return 0
+  multiboot_checkgamepath "$mountpoint/var/lib/foreign-clover/$mb_systemcode/profiles/0" && return 0
+  multiboot_checkgamepath "$mountpoint/var/lib/foreign-clover/$mb_systemcode" && return 0
+  multiboot_checkgamepath "$mountpoint/var/lib/clover/profiles/0" && return 1
+  return 1
+}
+
+multiboot_mountdirectories(){
+  [ -d "$rootfs$gamepath" ] || mkdir -p "$rootfs$gamepath"
+  local mb_savepath="$(multiboot_findsavepath)" && mount_bind "$mb_savepath" "$mountpoint/var/lib/clover/profiles/0/" && echo "$mb_savepath"
+  local mb_gamepath="$(multiboot_findgamepath)" && mount_bind "$mb_gamepath" "$rootfs$gamepath" && echo "$mb_gamepath"
+  return 0
+}
+
+multiboot_fixhsqs(){
+  if [ "$(md5sum "$rootfs/bin/hsqs" | awk '{ print $1 }')" == "51f5e925ce0c75977567122bc45597c6" ]; then
+    [ ! -f "$rootfs/bin/hsqs.multiboot-bak" ] && cat "$rootfs/bin/hsqs" > "$rootfs/bin/hsqs.multiboot-bak"
+    cat "$rootfs/bin/hsqs_expand_path" > "$rootfs/bin/hsqs"
+    chmod +x "$rootfs/bin/hsqs"
+  fi
+}
+
+linkGames(){
+  local mb_relative_gamepath="${1##$rootfs$gamepath}"
+  local mb_gamepath="$(multiboot_findgamepath)"
+  local mb_games="$mb_gamepath$mb_relative_gamepath"
+  [ -d "$mb_games" ] || return 1
+  rm -f "$mountpoint/var/games"
+  ln -s "${mb_games##$mountpoint}" "$mountpoint/var/games"
+}
