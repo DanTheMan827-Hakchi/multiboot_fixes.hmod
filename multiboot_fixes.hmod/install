@@ -10,7 +10,6 @@ cfg_firmware="_nand_"
 copy "$transferpath/b7200_multiboot" "$preinitpath/"
 copy "$transferpath/p7200_multiboot" "$preinitpath/"
 copy "$transferpath/hsqs_expand_path" "$rootfs/bin/"
-copy "$transferpath/clovercon/" "$rootfs/clovercon/"
 
 chmod +x "$rootfs/bin/hsqs_expand_path"
 
