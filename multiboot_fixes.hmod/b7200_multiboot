@@ -58,7 +58,7 @@ multiboot_findsavepath(){
 multiboot_mountdirectories(){
   [ -d "$rootfs$gamepath" ] || mkdir -p "$rootfs$gamepath"
   local mb_savepath="$(multiboot_findsavepath)" && mount_bind "$mb_savepath" "$mountpoint/var/lib/clover/profiles/0/" && echo "$mb_savepath"
-  local mb_gamepath="$(multiboot_findgamepath)" && mount_bind "$mb_gamepath" "$rootfs$gamepath" && echo "$mb_gamepath"
+  local mb_gamepath="$(multiboot_findgamepath)" && mount_bind "$mb_gamepath" "$installpath/games" && echo "$mb_gamepath"
   return 0
 }
 
@@ -71,7 +71,7 @@ multiboot_fixhsqs(){
 }
 
 linkGames(){
-  local mb_relative_gamepath="${1##$rootfs$gamepath}"
+  local mb_relative_gamepath="${1##$installpath/games}"
   local mb_gamepath="$(multiboot_findgamepath)"
   local mb_games="$mb_gamepath$mb_relative_gamepath"
   [ -d "$mb_games" ] || return 1
