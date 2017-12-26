@@ -49,9 +49,9 @@ multiboot_findsavepath(){
   multiboot_checksavepath "$mountpoint/media/hakchi/saves/$mb_systemcode/profiles/0" && return 0
   multiboot_checksavepath "$mountpoint/media/hakchi/saves/$mb_systemcode" && return 0
   multiboot_checksavepath "$mountpoint/media/hakchi/saves/" && return 0
-  multiboot_checkgamepath "$mountpoint/var/lib/foreign-clover/$mb_systemcode/profiles/0" && return 0
-  multiboot_checkgamepath "$mountpoint/var/lib/foreign-clover/$mb_systemcode" && return 0
-  multiboot_checkgamepath "$mountpoint/var/lib/clover/profiles/0" && return 1
+  multiboot_checksavepath "$mountpoint/var/lib/foreign-clover/$mb_systemcode/profiles/0" && return 0
+  multiboot_checksavepath "$mountpoint/var/lib/foreign-clover/$mb_systemcode" && return 0
+  multiboot_checksavepath "$mountpoint/var/lib/clover/profiles/0" && return 1
   return 1
 }
 
